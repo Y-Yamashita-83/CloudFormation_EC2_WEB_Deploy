@@ -88,25 +88,25 @@ Resources:
                 <html>
                   <head>
                     <meta charset="utf-8">
-                    <title>サンプルWEBサーバ1号機</title>
+                    <title>Sample WEB Vol.1</title>
                   </head>
                   <body>
-                    <h1>サンプルWEBサーバ1号機</h1>
-                    <h2>このWEBサーバについて</h2>
-                    <p>このWEBサーバはサンプルWEBサーバ1号機です。</p>
-                    <h2>私のAWS保持資格</h2>
-                    <p>私は以下のAWS資格を保持しています。</p>
+                    <h1>Sample WEB Vol.1</h1>
+                    <h2>About This WEB Page</h2>
+                    <p>This WEB Page is Sample WEB <strong>Vol.1.</strong></p>
+                    <h2>My AWS Certification</h2>
+                    <p>This is my AWS Certification.</p>
                     <ol>
                       <li>Solutions Architect - Associate</li>
                       <li>SysOps Administrator - Associate</li>
                       <li>Advanced Networking - Specialty</li>
                     </ol>
-                    <h2>外部リンク</h2>
-                    <p>私は以下のページでよくAWSの勉強をしています。</p>
+                    <h2>Link</h2>
+                    <p>I reference this site to study AWS.</p>
                     <ul>
-                      <li><a href="https://dev.classmethod.jp/" title="いわずと知れたクラメソさんの超有名ブログ" target="_blank">Developers IO</a></li>
-                      <li><a href="https://aws.amazon.com/jp/aws-jp-introduction/aws-jp-webinar-service-cut/" title="ブラックベルト資料集" target="_blank">AWS サービス別資料</a></li>
-                      <li><a href="https://aws.koiwaclub.com/" title="どうしてkoiwaclubって名前なんでしょうね？" target="_blank">AWS WEB問題集で学習しよう</a></li>
+                      <li><a href="https://dev.classmethod.jp/" title="Well-known Blog by ClassMethod" target="_blank">Developers IO</a></li>
+                      <li><a href="https://aws.amazon.com/jp/aws-jp-introduction/aws-jp-webinar-service-cut/" title="AWS Blackbelt" target="_blank">AWS Blackbelt</a></li>
+                      <li><a href="https://aws.koiwaclub.com/" title="Why named koiwaclub?" target="_blank">Koiwaclub</a></li>
                     </ul>
                   </body>
                  </html>
@@ -157,24 +157,24 @@ Resources:
                 <html>
                   <head>
                     <meta charset="utf-8">
-                    <title>サンプルWEBサーバ1号機</title>
+                    <title>Sample WEB Vol.2</title>
                   </head>
                   <body>
-                    <h1>サンプルWEBサーバ2号機</h1>
-                    <h2>このWEBサーバについて</h2>
-                    <p>このWEBサーバはサンプルWEBサーバ2号機です。</p>
-                    <h2>私の失効資格</h2>
-                    <p>私は以下の資格を失効してしまいました。</p>
+                    <h1>Sample WEB Vol.2</h1>
+                    <h2>About This WEB Page</h2>
+                    <p>This WEB Page is Sample WEB <strong>Vol.2.</strong></p>
+                    <h2>My Lost Certification</h2>
+                    <p>This is my lost certification.</p>
                     <ul>
                       <li>CCNA</li>
                       <li>CCNP</li>
                       <li>LPIC Lv1</li>
                       <li>LPIC Lv2</li>
                     </ul>
-                    <h2>外部リンク</h2>
-                    <p>以下は私のブログです。</p>
+                    <h2>Link</h2>
+                    <p>This is my blog.</p>
                     <ul>
-                      <li><a href="https://yuy-83.hatenablog.com/" title="もっと更新頻度を上げないと。。" target="_blank">Y_Yamashitaのブログ</a></li>
+                      <li><a href="https://yuy-83.hatenablog.com/" title="I want to post more regularly." target="_blank">Y_Yamashita's blog</a></li>
                     </ul>
                   </body>
                 </html>
