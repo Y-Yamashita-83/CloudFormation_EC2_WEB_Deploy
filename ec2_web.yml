@@ -1,0 +1,244 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: EC2 WEB Server Deploy
+
+Parameters:
+  KeyName:
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
+  AmiId:
+    Description: AMI Id
+    Type: String
+    Default: ami-0a1c2ec61571737db
+  ClientIP:
+    Description: Client IP Address
+    Type: String
+    Default: 0.0.0.0/0
+
+Resources:
+  VPC1:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.100.0.0/16
+      InstanceTenancy: default
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.100.0.0/24
+      VpcId: !Ref VPC1
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+
+  VPC1IGW:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+
+  VPC1IGWAttach:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref VPC1IGW
+      VpcId: !Ref VPC1
+
+  PublicRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC1
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+
+  PublicRoute1:
+    Type: AWS::EC2::Route
+    DependsOn: VPC1IGW
+    Properties:
+      RouteTableId: !Ref PublicRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref VPC1IGW
+
+  PublicSubnet1Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable1
+
+  EC2A:
+    Type: AWS::EC2::Instance
+    Metadata:
+      Comment: Install Apache & Create HTML File
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              httpd: []
+          files:
+            /var/www/html/index.html:
+              content: |
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>サンプルWEBサーバ1号機</title>
+                  </head>
+                  <body>
+                    <h1>サンプルWEBサーバ1号機</h1>
+                    <h2>このWEBサーバについて</h2>
+                    <p>このWEBサーバはサンプルWEBサーバ1号機です。</p>
+                    <h2>私のAWS保持資格</h2>
+                    <p>私は以下のAWS資格を保持しています。</p>
+                    <ol>
+                      <li>Solutions Architect - Associate</li>
+                      <li>SysOps Administrator - Associate</li>
+                      <li>Advanced Networking - Specialty</li>
+                    </ol>
+                    <h2>外部リンク</h2>
+                    <p>私は以下のページでよくAWSの勉強をしています。</p>
+                    <ul>
+                      <li><a href="https://dev.classmethod.jp/" title="いわずと知れたクラメソさんの超有名ブログ" target="_blank">Developers IO</a></li>
+                      <li><a href="https://aws.amazon.com/jp/aws-jp-introduction/aws-jp-webinar-service-cut/" title="ブラックベルト資料集" target="_blank">AWS サービス別資料</a></li>
+                      <li><a href="https://aws.koiwaclub.com/" title="どうしてkoiwaclubって名前なんでしょうね？" target="_blank">AWS WEB問題集で学習しよう</a></li>
+                    </ul>
+                  </body>
+                 </html>
+              mode: '000644'
+              owner: root
+              group: root
+          services:
+            sysvinit:
+              httpd:
+                enabled: 'true'
+                ensureRunning: 'true'
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: t3.micro
+      KeyName: !Ref KeyName
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: true
+          GroupSet: 
+            - !Ref InstanceSecurityGroup1
+          DeviceIndex: 0
+          SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          /opt/aws/bin/cfn-init -v \
+          --stack ${AWS::StackName} \
+          --resource EC2A \
+          --region ${AWS::Region}
+          sed -i.old -e 's/#Port 22/Port 51512/g' /etc/ssh/sshd_config
+          systemctl restart sshd
+
+  EC2B:
+    Type: AWS::EC2::Instance
+    Metadata:
+      Comment: Install Apache & Create HTML File
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              httpd: []
+          files:
+            /var/www/html/index.html:
+              content: |
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>サンプルWEBサーバ1号機</title>
+                  </head>
+                  <body>
+                    <h1>サンプルWEBサーバ2号機</h1>
+                    <h2>このWEBサーバについて</h2>
+                    <p>このWEBサーバはサンプルWEBサーバ2号機です。</p>
+                    <h2>私の失効資格</h2>
+                    <p>私は以下の資格を失効してしまいました。</p>
+                    <ul>
+                      <li>CCNA</li>
+                      <li>CCNP</li>
+                      <li>LPIC Lv1</li>
+                      <li>LPIC Lv2</li>
+                    </ul>
+                    <h2>外部リンク</h2>
+                    <p>以下は私のブログです。</p>
+                    <ul>
+                      <li><a href="https://yuy-83.hatenablog.com/" title="もっと更新頻度を上げないと。。" target="_blank">Y_Yamashitaのブログ</a></li>
+                    </ul>
+                  </body>
+                </html>
+              mode: '000644'
+              owner: root
+              group: root
+          services:
+            sysvinit:
+              httpd:
+                enabled: 'true'
+                ensureRunning: 'true'
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: t3.micro
+      KeyName: !Ref KeyName
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: true
+          GroupSet: 
+            - !Ref InstanceSecurityGroup1
+          DeviceIndex: 0
+          SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          /opt/aws/bin/cfn-init -v \
+          --stack ${AWS::StackName} \
+          --resource EC2B \
+          --region ${AWS::Region}
+          sed -i.old -e 's/#Port 22/Port 51512/g' /etc/ssh/sshd_config
+          systemctl restart sshd
+
+  InstanceSecurityGroup1:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Security Group for VPC1
+      SecurityGroupIngress:
+        -
+          IpProtocol: tcp
+          FromPort: 51512
+          ToPort: 51512
+          CidrIp: !Ref ClientIP
+        -
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref ClientIP
+      VpcId: !Ref VPC1
+      Tags:
+        - Key: Name
+          Value: EC2-WEB-deploy
+
+
+Outputs:
+  PublicSubnet1:
+    Description: PublicSubnet1
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub ${AWS::StackName}-PublicSubnet1
+
+  InstanceSecurityGroup1:
+    Description: InstanceSecurityGroup1
+    Value: !Ref InstanceSecurityGroup1
+    Export:
+      Name: !Sub ${AWS::StackName}-InstanceSecurityGroup1
