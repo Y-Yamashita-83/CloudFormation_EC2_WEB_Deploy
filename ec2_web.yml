@@ -140,6 +140,7 @@ Resources:
           --region ${AWS::Region}
           sed -i.old -e 's/#Port 22/Port 51512/g' /etc/ssh/sshd_config
           systemctl restart sshd
+          sed -i.old -e 's/#ServerName www.example.com:80/ServerName www.yuy-intro-sample.com:80/g' /etc/httpd/conf/httpd.conf
 
   EC2B:
     Type: AWS::EC2::Instance
@@ -208,6 +209,7 @@ Resources:
           --region ${AWS::Region}
           sed -i.old -e 's/#Port 22/Port 51512/g' /etc/ssh/sshd_config
           systemctl restart sshd
+          sed -i.old -e 's/#ServerName www.example.com:80/ServerName www.yuy-intro-sample.com:80/g' /etc/httpd/conf/httpd.conf
 
   InstanceSecurityGroup1:
     Type: 'AWS::EC2::SecurityGroup'
