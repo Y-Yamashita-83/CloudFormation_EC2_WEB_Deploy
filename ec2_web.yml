@@ -13,6 +13,10 @@ Parameters:
     Description: Client IP Address
     Type: String
     Default: 0.0.0.0/0
+  ServerName:
+    Description: ServerName and Port Number of EC2 WEB Server
+    Type: String
+    Default: www.example.com:80
 
 Resources:
   VPC1:
@@ -104,6 +108,7 @@ Resources:
                     <h2>Link</h2>
                     <p>I reference this site to study AWS.</p>
                     <ul>
+                      <li><a href="https://blog.serverworks.co.jp/" title="Well-known Blog by Serverworks" target="_blank">Serverworks Engineer Blog</a></li>
                       <li><a href="https://dev.classmethod.jp/" title="Well-known Blog by ClassMethod" target="_blank">Developers IO</a></li>
                       <li><a href="https://aws.amazon.com/jp/aws-jp-introduction/aws-jp-webinar-service-cut/" title="AWS Blackbelt" target="_blank">AWS Blackbelt</a></li>
                       <li><a href="https://aws.koiwaclub.com/" title="Why named koiwaclub?" target="_blank">Koiwaclub</a></li>
@@ -140,7 +145,10 @@ Resources:
           --region ${AWS::Region}
           sed -i.old -e 's/#Port 22/Port 51512/g' /etc/ssh/sshd_config
           systemctl restart sshd
-          sed -i.old -e 's/#ServerName www.example.com:80/ServerName www.yuy-intro-sample.com:80/g' /etc/httpd/conf/httpd.conf
+          sed -i.old -e "s/#ServerName www.example.com:80/${!SERVERNAME}/g" /etc/httpd/conf/httpd.conf
+          - {
+              SERVERNAME: !Ref ServerName
+            }
 
   EC2B:
     Type: AWS::EC2::Instance
@@ -209,7 +217,10 @@ Resources:
           --region ${AWS::Region}
           sed -i.old -e 's/#Port 22/Port 51512/g' /etc/ssh/sshd_config
           systemctl restart sshd
-          sed -i.old -e 's/#ServerName www.example.com:80/ServerName www.yuy-intro-sample.com:80/g' /etc/httpd/conf/httpd.conf
+          sed -i.old -e "s/#ServerName www.example.com:80/${!SERVERNAME}/g" /etc/httpd/conf/httpd.conf
+          - {
+              SERVERNAME: !Ref ServerName
+            }
 
   InstanceSecurityGroup1:
     Type: 'AWS::EC2::SecurityGroup'
