@@ -11,3 +11,4 @@ cfn-initで以下を実行します。<br>
 - EC2にhttpdをインストール
 - /var/www/html/index.htmlファイルを作成
 - SSHのListenポートを22から51512に変更
+- /etc/httpd/conf/httpd.confのServerNameの値を変更
